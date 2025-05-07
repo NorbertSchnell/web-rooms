@@ -2,8 +2,8 @@ const questionElem = document.getElementById('question-container');
 const nextQuestionButton = document.getElementById('next-question');
 const correctAnswerButton = document.getElementById('correct-answer');
 const infoElem = document.getElementById('info-container');
-const webSocketPort = 3000;
-const webSocketAddr = 'localhost';
+// const webSocketAddr = 'http://localhost:3000';
+const webSocketAddr = 'wss://nosch.uber.space/web-rooms/';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 const answers = {};
@@ -167,7 +167,7 @@ function displayCorrectAnswer() {
 /****************************************************************
  * websocket communication
  */
-const socket = new WebSocket(`ws://${webSocketAddr}:${webSocketPort}`);
+const socket = new WebSocket(webSocketAddr);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {

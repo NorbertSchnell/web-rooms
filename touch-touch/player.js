@@ -4,9 +4,7 @@ const indexElem = document.getElementById('client-index');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 
-const webSocketPort = 3000;
-const webSocketAddr = '192.168.178.94';
-
+const webSocketAddr = 'wss://nosch.uber.space/web-rooms/';
 const circleRadius = 50;
 
 let clientId = null;
@@ -129,7 +127,7 @@ function drawCircle(context, x, y, highlight = false) {
 /****************************************************************
  * websocket communication
  */
-const socket = new WebSocket(`https://${webSocketAddr}:${webSocketPort}`);
+const socket = new WebSocket(webSocketAddr);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
