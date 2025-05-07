@@ -275,11 +275,12 @@ function resetAll() {
 //   .listen(httpPort, () => console.log(`server listening on port ${httpPort}`));
 
 const httpPort = Number(process.env.PORT) || 3000;
+const httpHost = '0.0.0.0';
 const app = express();
 
 const httpServer = http
   .createServer(app)
-  .listen(httpPort, () => console.log(`server listening on port ${httpPort}`));
+  .listen(httpPort, httpHost, () => console.log(`server listening on ${httpHost}:${httpPort}`));
 
 app.use(express.static('.'));
 
