@@ -1,4 +1,5 @@
-# Websocket Server
+# Web Rooms
+*Web Rooms* is a generic general purpose websocket server that provides a simple set of commands to build creative cooperative applications.
 
 ## Request Protocol
 
