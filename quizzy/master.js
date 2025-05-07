@@ -3,7 +3,7 @@ const nextQuestionButton = document.getElementById('next-question');
 const correctAnswerButton = document.getElementById('correct-answer');
 const infoElem = document.getElementById('info-container');
 const webSocketPort = 3000;
-const webSocketAddr = '192.168.178.94';
+const webSocketAddr = 'localhost';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 const answers = {};
@@ -18,7 +18,7 @@ for (let optionId of optionIds) {
 
 let clientId = null;
 let clientCount = 0;
-let maxClientCount = 10;
+let minClientCount = 24;
 let currentQuestionIndex = -1;
 let currentQuestion = null;
 
@@ -121,7 +121,7 @@ function setAnswer(optionId, clientId) {
         answer.clients.delete(clientId);
       }
 
-      const percentage = 100 * Math.min(1, answer.clients.size / (maxClientCount - 1));
+      const percentage = 100 * Math.min(1, answer.clients.size / (minClientCount - 1));
       answer.sliderElem.style.width = `${percentage}%`;
     }
   }
@@ -167,7 +167,7 @@ function displayCorrectAnswer() {
 /****************************************************************
  * websocket communication
  */
-const socket = new WebSocket(`https://${webSocketAddr}:${webSocketPort}`);
+const socket = new WebSocket(`ws://${webSocketAddr}:${webSocketPort}`);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
@@ -197,7 +197,7 @@ socket.addEventListener('message', (event) => {
 
       case 'client-count':
         clientCount = incoming[1];
-        maxClientCount = Math.max(maxClientCount, clientCount);
+        minClientCount = Math.max(minClientCount, clientCount);
         updateInfo();
         break;
 
