@@ -4,8 +4,7 @@ const indexElem = document.getElementById('client-index');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 // const webSocketAddr = 'http://localhost:3000';
-// const webSocketAddr = 'http://192.168.0.1:3000';
-const webSocketAddr = 'http://nosch.uber.space/web-rooms/';
+const webSocketAddr = 'https://217.248.11.107:3000/';
 
 const circleRadius = 50;
 

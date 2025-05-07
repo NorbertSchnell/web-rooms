@@ -2,8 +2,7 @@ const questionElem = document.getElementById('question-container');
 const infoElem = document.getElementById('info-container');
 
 // const webSocketAddr = 'http://localhost:3000';
-// const webSocketAddr = 'http://192.168.0.1:3000';
-const webSocketAddr = 'http://nosch.uber.space/web-rooms/';
+const webSocketAddr = 'https://217.248.11.107:3000/';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 let clientId = null;
