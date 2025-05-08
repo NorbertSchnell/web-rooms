@@ -1,16 +1,16 @@
 # Web Rooms
 *Web Rooms* is a generic general purpose websocket server that provides a simple set of commands to build creative cooperative applications.
 
-## 1. Examples
+## 1 Examples
 
 - [Touch Touch](https://norbertschnell.github.io/web-rooms/touch-touch/)
 - [Quizzy](https://norbertschnell.github.io/web-rooms/quizzy/)
 
-## 2. Getting Started
+## 2 Getting Started
 
-## 3 Protocol Documentation
+## 3 Web Room Request
 
-### 3.1 Websocket Request Protocol
+### 3.1 Websocket Requests
 The *Web Rooms* sever provides a set of requests to enter rooms, query information about a room (e.g. the number of clients currently connected to the room) and send messages to other clients.
 
 All requests are lead and terminated by '*' as for example `'*enter-room*'` or `'*broadcast-message*'`.
@@ -77,10 +77,10 @@ A client that has entered a room can send the following requests to set and get 
 ##### `'*unsubscribe-data*' <key>`
 - unsubscribe from data notifications
 
-#### 3.2 Errors
+### 3.1.5 Errors
 All of the requests and messages described above return `'*error*' ['no-room']` when they are called before the requesting client has entered a room by requesting `'*enter-room*'`. Exceptions are the `'*enter-room*'` request itself as well as `'*reset-all*'`.
 
-### 4. HTTP Requests (not yet implemented)
+### 3.2 HTTP Requests (not yet implemented)
 
 ##### `get-client-ids <room name>`
 
