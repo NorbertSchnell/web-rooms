@@ -5,7 +5,7 @@ import WebSocket from 'ws';
 import * as fs from 'fs';
 
 const httpPort = Number(process.env.PORT) || 3000;
-const httpHost = '192.168.0.129';
+const httpHost = '0.0.0.0';
 const app = express();
 
 app.use(express.static('.'));
@@ -43,11 +43,11 @@ class Client {
   }
 
   sendError(...message) {
-    sendMessage(this.socket, ['error', message]);
+    sendMessage(this.socket, ['*error*', message]);
   }
 
   sendOk() {
-    sendMessage(this.socket, ['ok']);
+    sendMessage(this.socket, ['*ok*']);
   }
 }
 
@@ -309,12 +309,12 @@ webSocketServer.on('connection', (socket, req) => {
           const room = new Room(name);
 
           const clientId = room.addClient(client);
-          client.sendMessage('client-id', clientId);
+          client.sendMessage('*client-id*', clientId);
 
-          room.callDataListeners('client-enter', clientId, client);
+          room.callDataListeners('*client-enter*', clientId, client);
 
           const clientCount = room.getClientCount();
-          room.callDataListeners('client-count', clientCount, client);
+          room.callDataListeners('*client-count*', clientCount, client);
 
           break;
         }
@@ -337,7 +337,7 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientIds = room.getClientIds();
-            client.sendMessage('client-ids', clientIds);
+            client.sendMessage('*client-ids*', clientIds);
           } else {
             client.sendError('no-room', room.name);
           }
@@ -351,7 +351,7 @@ webSocketServer.on('connection', (socket, req) => {
           if (room) {
             for (let other of this.clientList) {
               if (other !== client) {
-                client.sendMessage('client-enter', other.id);
+                client.sendMessage('*client-enter*', other.id);
               }
             }
 
