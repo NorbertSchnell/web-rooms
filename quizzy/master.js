@@ -192,12 +192,12 @@ socket.addEventListener('message', (event) => {
 
     // dispatch incomming messages
     switch (selector) {
-      case 'client-id':
+      case '*client-id*':
         clientId = incoming[1];
         startMaster();
         break;
 
-      case 'client-count':
+      case '*client-count*':
         clientCount = incoming[1];
         minClientCount = Math.max(minClientCount, clientCount);
         updateInfo();
@@ -210,7 +210,7 @@ socket.addEventListener('message', (event) => {
         break;
       }
 
-      case 'error': {
+      case '*error*': {
         const message = incoming[1];
         console.warn('server error:', ...message);
         break;

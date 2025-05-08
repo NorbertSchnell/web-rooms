@@ -62,14 +62,14 @@ socket.addEventListener('message', (event) => {
     // dispatch incomming messages
     switch (selector) {
       // responds to 'enter-room'
-      case 'client-id':
+      case '*client-id*':
         clientId = incoming[1];
         infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;
         start();
         break;
 
       // responds to 'subscribe-client-count'
-      case 'client-count':
+      case '*client-count*':
         clientCount = incoming[1];
         infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;
         break;
@@ -82,7 +82,7 @@ socket.addEventListener('message', (event) => {
         highlightText(titleDisplay); // highlight screen by others (function defined above)
         break;
 
-      case 'error': {
+      case '*error*': {
         const message = incoming[1];
         console.warn('server error:', ...message);
         break;

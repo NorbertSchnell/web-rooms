@@ -112,7 +112,7 @@ socket.addEventListener('message', (event) => {
 
     // dispatch incomming messages
     switch (selector) {
-      case 'client-id':
+      case '*client-id*':
         clientId = incoming[1];
         startPlaying();
         break;
@@ -130,7 +130,7 @@ socket.addEventListener('message', (event) => {
         break;
       }
 
-      case 'error': {
+      case '*error*': {
         const message = incoming[1];
         console.warn('server error:', ...message);
         break;

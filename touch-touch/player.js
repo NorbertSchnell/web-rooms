@@ -153,13 +153,13 @@ socket.addEventListener('message', (event) => {
 
     // dispatch incomming messages
     switch (selector) {
-      case 'client-id':
+      case '*client-id*':
         clientId = incoming[1] + 1;
         indexElem.innerHTML = `#${clientId}/${clientCount}`;
         start();
         break;
 
-      case 'client-count':
+      case '*client-count*':
         clientCount = incoming[1];
         indexElem.innerHTML = `#${clientId}/${clientCount}`;
         break;
@@ -186,7 +186,7 @@ socket.addEventListener('message', (event) => {
         break;
       }
 
-      case 'error': {
+      case '*error*': {
         const message = incoming[1];
         console.warn('server error:', ...message);
         break;
