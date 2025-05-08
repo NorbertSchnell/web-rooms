@@ -28,7 +28,7 @@ The *hello-world* example consists of the followig files:
 ### 3.1 Websocket Requests
 The *Web Rooms* sever provides a set of requests to enter rooms, query information about a room (e.g. the number of clients currently connected to the room) and send messages to other clients.
 
-All requests are lead and terminated by '*' as for example `'*enter-room*'` or `'*broadcast-message*'`.
+All requests are led and terminated by '*' as for example `'*enter-room*'` or `'*broadcast-message*'`.
 
 #### 3.1.1 Entering and Exiting Rooms
 A client sends the following request to enter a room. A room is created when the first client requests to enter. When the last client of a particular room has been disconnected, the room is deleted.
