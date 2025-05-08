@@ -2,7 +2,8 @@ const questionElem = document.getElementById('question-container');
 const infoElem = document.getElementById('info-container');
 
 // const webSocketAddr = 'http://localhost:3000';
-const webSocketAddr = 'https://217.248.11.107:3000/';
+// const webSocketAddr = 'https://217.248.11.107:3000/';
+const webSocketAddr = 'https://192.168.0.129:3000';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 let clientId = null;
@@ -55,7 +56,7 @@ function setAnswer(optionId) {
     selectedOptionId = optionId;
 
     if (clientId !== null && responseId !== null) {
-      sendRequest('send-message', responseId, ['answer', optionId, clientId]);
+      sendRequest('*send-message*', responseId, ['answer', optionId, clientId]);
     }
   }
 }
@@ -93,7 +94,7 @@ const socket = new WebSocket(webSocketAddr);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
-  sendRequest('enter-room', 'quizzy');
+  sendRequest('*enter-room*', 'quizzy');
 });
 
 socket.addEventListener("close", (event) => {

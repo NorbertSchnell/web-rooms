@@ -5,6 +5,7 @@ const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
 // const webSocketAddr = 'http://localhost:3000';
 const webSocketAddr = 'https://217.248.11.107:3000/';
+// const webSocketAddr = 'https://192.168.0.135:3000';
 
 const circleRadius = 50;
 
@@ -76,7 +77,7 @@ function onPointerDown(e) {
     const x = e.clientX / canvas.width;
     const y = e.clientY / canvas.height;
     createTouch(clientId, x, y, true);
-    sendRequest('broadcast-message', ['start', clientId, x, y]);
+    sendRequest('*broadcast-message*', ['start', clientId, x, y]);
   }
 }
 
@@ -85,14 +86,14 @@ function onPointerMove(e) {
     const x = e.clientX / canvas.width;
     const y = e.clientY / canvas.height;
     moveTouch(clientId, x, y);
-    sendRequest('broadcast-message', ['move', clientId, x, y]);
+    sendRequest('*broadcast-message*', ['move', clientId, x, y]);
   }
 }
 
 function onPointerUp(e) {
   if (e.pointerId === pointerId) {
     deleteTouch(clientId);
-    sendRequest('broadcast-message', ['end', clientId]);
+    sendRequest('*broadcast-message*', ['end', clientId]);
     pointerId = null;
   }
 }
@@ -132,13 +133,14 @@ const socket = new WebSocket(webSocketAddr);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
-  sendRequest('enter-room', 'touch-touch');
-  sendRequest('subscribe-client-count');
+  sendRequest('*enter-room*', 'touch-touch');
+  sendRequest('*subscribe-client-count*');
 });
 
 socket.addEventListener("close", (event) => {
   clientId = null;
   document.body.classList.add('disconnected');
+  sendRequest('*broadcast-message*', ['end', clientId]);x
 });
 
 // listen to messages from server
@@ -195,10 +197,6 @@ socket.addEventListener('message', (event) => {
     }
   }
 });
-
-window.addEventListener("close", () => {
-  sendRequest('broadcast-message', ['end', client]);
-})
 
 function setErrorMessage(text) {
   messageElem.innerText = text;

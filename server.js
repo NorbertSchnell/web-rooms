@@ -1,7 +1,15 @@
 import http from 'http';
+import https from 'https';
 import express from 'express';
 import WebSocket from 'ws';
-// import * as fs from 'fs';
+import * as fs from 'fs';
+
+const httpPort = Number(process.env.PORT) || 3000;
+const httpHost = '192.168.0.129';
+const app = express();
+
+app.use(express.static('.'));
+
 
 const rooms = new Map();
 const clients = new Map();
@@ -267,22 +275,16 @@ function resetAll() {
  */
 // mkdir sslcert
 // openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout sslcert/selfsigned.key -out sslcert/selfsigned.crt
-// const key = fs.readFileSync('sslcert/selfsigned.key', 'utf8');
-// const cert = fs.readFileSync('sslcert/selfsigned.crt', 'utf8');
-// const credentials = { key, cert };
-// const httpServer = https
-//   .createServer(credentials, app)
-//   .listen(httpPort, () => console.log(`server listening on port ${httpPort}`));
+const key = fs.readFileSync('sslcert/selfsigned.key', 'utf8');
+const cert = fs.readFileSync('sslcert/selfsigned.crt', 'utf8');
+const credentials = { key, cert };
+const httpServer = https
+  .createServer(credentials, app)
+  .listen(httpPort, httpHost, app, () => console.log(`server listening on port ${httpPort}`));
 
-const httpPort = Number(process.env.PORT) || 3000;
-const httpHost = '0.0.0.0';
-const app = express();
-
-const httpServer = http
-  .createServer(app)
-  .listen(httpPort, httpHost, () => console.log(`server listening on ${httpHost}:${httpPort}`));
-
-app.use(express.static('.'));
+// const httpServer = http
+//   .createServer(app)
+//   .listen(httpPort, httpHost, () => console.log(`server listening on ${httpHost}:${httpPort}`));
 
 /****************************************************************
  * websoket server
@@ -302,7 +304,7 @@ webSocketServer.on('connection', (socket, req) => {
 
       switch (selector) {
         // room client ///////////////////////////////////////////////////
-        case 'enter-room': {
+        case '*enter-room*': {
           const name = incoming[1];
           const room = new Room(name);
 
@@ -317,7 +319,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'exit-room': {
+        case '*exit-room*': {
           const room = client.room;
 
           room.removeClient(client);
@@ -330,7 +332,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'get-client-ids': {
+        case '*get-client-ids*': {
           const room = client.room;
 
           if (room) {
@@ -343,7 +345,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'subscribe-client-enter-exit': {
+        case '*subscribe-client-enter-exit*': {
           const room = client.room;
 
           if (room) {
@@ -362,7 +364,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'unsubscribe-clients': {
+        case '*unsubscribe-clients*': {
           const room = client.room;
 
           if (room) {
@@ -375,7 +377,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'get-client-count': {
+        case '*get-client-count*': {
           const room = client.room;
 
           if (room) {
@@ -388,7 +390,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'subscribe-client-count': {
+        case '*subscribe-client-count*': {
           const room = client.room;
 
           if (room) {
@@ -403,7 +405,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'unsubscribe-client-count': {
+        case '*unsubscribe-client-count*': {
           const room = client.room;
 
           if (room) {
@@ -416,7 +418,7 @@ webSocketServer.on('connection', (socket, req) => {
         }
 
         // messages ///////////////////////////////////////////////////
-        case 'send-message': {
+        case '*send-message*': {
           const room = client.room;
 
           if (room) {
@@ -430,7 +432,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'broadcast-message': {
+        case '*broadcast-message*': {
           const room = client.room;
 
           if (room) {
@@ -444,7 +446,7 @@ webSocketServer.on('connection', (socket, req) => {
         }
 
         // data ///////////////////////////////////////////////////
-        case 'set-data': {
+        case '*set-data*': {
           const room = client.room;
 
           if (room) {
@@ -459,7 +461,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'get-data': {
+        case '*get-data*': {
           const room = client.room;
 
           if (room) {
@@ -473,7 +475,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'subscribe-data': {
+        case '*subscribe-data*': {
           const room = client.room;
 
           if (room) {
@@ -487,7 +489,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'unsubscribe-data': {
+        case '*unsubscribe-data*': {
           const room = client.room;
 
           if (room) {
