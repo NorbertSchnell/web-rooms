@@ -7,6 +7,19 @@
 - [Quizzy](https://norbertschnell.github.io/web-rooms/quizzy/)
 
 ## 2 Getting Started
+To start developing your own rooms you may begin with modifying one of the examples. 
+The most simple example is 'hello-world'.
+
+You simply have to follow these steps:
+1. Download the code from the GitHub repository either by cloning the repository or by downloadig a ZIP file
+2. Modify the *hello-world* example.
+3. Start a HTTP servere (i.e. the live server of VS Code)
+4. Open the *index.html* in your browser (in case the live server hasn't done that already)
+
+The *hello-world* example consists of the followig files:
+- **`index.html`** | the HTML file of the client
+- **`player.js`** | the JavaScript of the client
+- **`style.css`** | the CSS style sheet of the client
 
 ## 3 Web Room Request
 
