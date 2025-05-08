@@ -61,14 +61,14 @@ socket.addEventListener('message', (event) => {
 
     // dispatch incomming messages
     switch (selector) {
-      // responds to 'enter-room'
+      // responds to '*enter-room*'
       case '*client-id*':
         clientId = incoming[1];
         infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;
         start();
         break;
 
-      // responds to 'subscribe-client-count'
+      // responds to '*subscribe-client-count*'
       case '*client-count*':
         clientCount = incoming[1];
         infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;

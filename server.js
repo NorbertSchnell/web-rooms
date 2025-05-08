@@ -389,7 +389,7 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case 'subscribe-client-count': {
+        case '*subscribe-client-count*': {
           const room = client.room;
 
           if (room) {
