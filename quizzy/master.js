@@ -1,11 +1,9 @@
 const questionElem = document.getElementById('question-container');
 const nextQuestionButton = document.getElementById('next-question');
 const correctAnswerButton = document.getElementById('correct-answer');
-
 const infoElem = document.getElementById('info-container');
-// const webSocketAddr = 'http://localhost:3000';
-// const webSocketAddr = 'https://217.248.11.107:3000/';
-const webSocketAddr = 'https://192.168.0.129:3000';
+
+const webSocketAddr = 'https://217.248.11.107:3000/';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 const answers = {};
