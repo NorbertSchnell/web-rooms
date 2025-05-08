@@ -54,10 +54,10 @@ class Client {
 class Room {
   constructor(name) {
     const room = rooms.get(name);
-    
+
     if (room) {
       return room;
-    } 
+    }
 
     this.name = name;
     this.clientList = [];
@@ -355,8 +355,8 @@ webSocketServer.on('connection', (socket, req) => {
               }
             }
 
-            room.addDataListener(client, 'client-enter');
-            room.addDataListener(client, 'client-exit');
+            room.addDataListener(client, '*client-enter*');
+            room.addDataListener(client, '*client-exit*');
           } else {
             client.sendError('no-room', room.name);
           }
@@ -390,14 +390,14 @@ webSocketServer.on('connection', (socket, req) => {
           break;
         }
 
-        case '*subscribe-client-count*': {
+        case 'subscribe-client-count': {
           const room = client.room;
 
           if (room) {
             const clientCount = room.getClientCount();
-            client.sendMessage('client-count', clientCount);
+            client.sendMessage('*client-count*', clientCount);
 
-            room.addDataListener(client, 'client-count');
+            room.addDataListener(client, '*client-count*');
           } else {
             client.sendError('no-room', room.name);
           }
