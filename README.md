@@ -13,7 +13,7 @@ A client sends the following request to enter a room. A room is created when the
 
 ##### `'*enter-room*' <name>`
 - adds the client to a room given by name and assigns it an ID within the room
-- &#8594; sends `'*client-id' <client id>`
+- &#8594; sends `'*client-id*' <client id>`
 
 ##### `'*exit-room*'`
 - removes the client from its current room
