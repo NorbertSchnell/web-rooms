@@ -323,10 +323,10 @@ webSocketServer.on('connection', (socket, req) => {
 
           room.removeClient(client);
 
-          room.callDataListeners('client-exit', clientId);
+          room.callDataListeners('*client-exit*', clientId);
 
           const clientCount = room.getClientCount();
-          room.callDataListeners('client-count', clientCount, client);
+          room.callDataListeners('*client-count*', clientCount, client);
 
           break;
         }
@@ -367,8 +367,8 @@ webSocketServer.on('connection', (socket, req) => {
           const room = client.room;
 
           if (room) {
-            room.removeDataListener(client, 'client-enter');
-            room.removeDataListener(client, 'client-exit');
+            room.removeDataListener(client, '*client-enter*');
+            room.removeDataListener(client, '*client-exit*');
           } else {
             client.sendError('no-room', room.name);
           }
@@ -381,7 +381,7 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientCount = room.getClientCount();
-            client.sendMessage('client-count', clientCount);
+            client.sendMessage('*client-count*', clientCount);
           } else {
             client.sendError('no-room', room.name);
           }
