@@ -77,7 +77,7 @@ A client that has entered a room can send the following requests to set and get 
 ##### `'*unsubscribe-data*' <key>`
 - unsubscribe from data notifications
 
-### 3.1.5 Errors
+#### 3.1.5 Errors
 All of the requests and messages described above return `'*error*' ['no-room']` when they are called before the requesting client has entered a room by requesting `'*enter-room*'`. Exceptions are the `'*enter-room*'` request itself as well as `'*reset-all*'`.
 
 ### 3.2 HTTP Requests (not yet implemented)
