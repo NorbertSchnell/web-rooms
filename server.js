@@ -10,7 +10,6 @@ const app = express();
 
 app.use(express.static('.'));
 
-
 const rooms = new Map();
 const clients = new Map();
 
@@ -89,10 +88,10 @@ class Room {
       this.clientList.splice(clientIndex, 1);
 
       this.removeDataListener(client);
-      this.callDataListeners('client-exit', client.id);
+      this.callDataListeners('*client-exit*', client.id);
 
       const clientCount = this.clientList.length;
-      this.callDataListeners('client-count', clientCount);
+      this.callDataListeners('*client-count*', clientCount);
 
       if (clientCount === 0) {
         this.reset();
