@@ -2,7 +2,7 @@ const titleDisplay = document.getElementById('title-display');
 const infoDisplay = document.getElementById('info-display');
 
 // address of the WebSocket server
-const webRoomsSocketAddr = 'https://217.248.11.107:3000/';
+const webRoomsWebSocketServerAddr = 'https://217.248.11.107:3000/';
 
 // variables
 let clientId = null; // client ID sent by web-rooms server when calling 'enter-room'
@@ -32,7 +32,7 @@ function highlightText(elem) {
 /****************************************************************
  * websocket communication
  */
-const socket = new WebSocket(webRoomsSocketAddr);
+const socket = new WebSocket(webRoomsWebSocketServerAddr);
 
 // helper function to send requests over websocket to web-room server
 function sendRequest(...message) {

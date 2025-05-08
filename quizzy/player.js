@@ -1,7 +1,7 @@
 const questionElem = document.getElementById('question-container');
 const infoElem = document.getElementById('info-container');
 
-const webSocketAddr = 'https://217.248.11.107:3000/';
+const webRoomsWebSocketServerAddr = 'https://217.248.11.107:3000/';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 let clientId = null;
@@ -88,7 +88,7 @@ function onClick(e) {
 /****************************************************************
  * websocket communication
  */
-const socket = new WebSocket(webSocketAddr);
+const socket = new WebSocket(webRoomsWebSocketServerAddr);
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
