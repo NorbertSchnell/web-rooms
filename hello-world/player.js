@@ -2,8 +2,7 @@ const titleDisplay = document.getElementById('title-display');
 const infoDisplay = document.getElementById('info-display');
 
 // address of the WebSocket server
-// const webRoomsSocketAddr = 'https://217.248.11.107:3000/';
-const webRoomsSocketAddr = 'https://nosch.uber.space/web-rooms/';
+const webRoomsSocketAddr = 'https://217.248.11.107:3000/';
 
 // variables
 let clientId = null; // client ID sent by web-rooms server when calling 'enter-room'
