@@ -14,10 +14,9 @@ The most simple example is *hello-world*. The example
 You simply have to follow these steps:
 1. Download the code from the GitHub repository either by cloning the repository or by downloadig a ZIP file
 2. Modify the *hello-world* example.
-3. Start a HTTP servere (i.e. the live server of VS Code)
-4. Open the *index.html* in your browser (in case the live server hasn't done that already)
+3. Start an HTTP server to open the *index.html* of the example (i.e. the live server of VS Code)
 
-You should open multiple instances of the client in differnt windows of you browser by copying the URL from the first to several othe windows. Move the resize the windows in a way that you can see all of (for example 3 or 4) at the same time Open the console of the developer tools of each browser watch teh printouts while you click inside the browser window.
+You should open multiple instances of the client in differnt windows of you browser by copying the URL from the first window to several others. Move the resize the windows in a way that you can see and use all of them (for example 3 or 4) at the same time. Open the console of the developer tools of each browser watch the printouts while you click anywhere inside the browser window.
 
 The *hello-world* example consists of the followig files:
 - **`index.html`** | the HTML file of the client
