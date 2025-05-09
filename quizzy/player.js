@@ -1,7 +1,7 @@
 const questionElem = document.getElementById('question-container');
 const infoElem = document.getElementById('info-container');
 
-const webRoomsWebSocketServerAddr = 'https://217.248.11.107:3000/';
+const webRoomsWebSocketServerAddr = 'https://nosch.uber.space/web-rooms/';
 
 const optionIds = ['a', 'b', 'c', 'd'];
 let clientId = null;
@@ -93,6 +93,9 @@ const socket = new WebSocket(webRoomsWebSocketServerAddr);
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
   sendRequest('*enter-room*', 'quizzy');
+
+  // ping the server regularly with an empty message to prevent the socket from closing
+  setInterval(() => socket.send(''), 30000);
 });
 
 socket.addEventListener("close", (event) => {

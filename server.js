@@ -297,7 +297,7 @@ webSocketServer.on('connection', (socket, req) => {
   clients.set(socket, client);
 
   socket.on('message', (data) => {
-    if (data.length > 0) {
+    if (data.length > 0) { // filter out empty ping messages
       const incoming = JSON.parse(data);
       const selector = incoming[0];
 

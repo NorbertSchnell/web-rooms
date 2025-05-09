@@ -3,7 +3,7 @@ const messageElem = document.getElementById('message-display');
 const indexElem = document.getElementById('client-index');
 const canvas = document.getElementById('canvas');
 const context = canvas.getContext('2d');
-const webRoomsWebSocketServerAddr = 'https://217.248.11.107:3000/';
+const webRoomsWebSocketServerAddr = 'https://nosch.uber.space/web-rooms/';
 
 const circleRadius = 50;
 
@@ -133,6 +133,9 @@ const socket = new WebSocket(webRoomsWebSocketServerAddr);
 socket.addEventListener('open', (event) => {
   sendRequest('*enter-room*', 'touch-touch');
   sendRequest('*subscribe-client-count*');
+
+  // ping the server regularly with an empty message to prevent the socket from closing
+  setInterval(() => socket.send(''), 30000);
 });
 
 socket.addEventListener("close", (event) => {
