@@ -3,13 +3,15 @@
 
 ## 1 Examples
 
-- [Hello World!](https://norbertschnell.github.io/web-rooms/hello-world/)
-- [Touch Touch](https://norbertschnell.github.io/web-rooms/touch-touch/)
-- [Quizzy](https://norbertschnell.github.io/web-rooms/quizzy/)
+- [Hello World!](https://norbertschnell.github.io/web-rooms/hello-world/) ... the simplest example
+- [Touch Touch](https://norbertschnell.github.io/web-rooms/touch-touch/) ... sending a single pointer position to all other clients
+- Quzzy ... a simple Quiz with a master client and unlimited players
+  - [Players](https://norbertschnell.github.io/web-rooms/quizzy/) ... the quiz players
+  - [Master](https://norbertschnell.github.io/web-rooms/quizzy/master.html) ... the quiz master (should be only one)
 
 ## 2 Getting Started
 To start developing your own rooms you may begin with modifying one of the examples. 
-The most simple example is *hello-world*. The example 
+The most simple example is *hello-world*. The example sends simple messages to the other cients.
 
 You simply have to follow these steps:
 1. Download the code from the GitHub repository either by cloning the repository or by downloadig a ZIP file
