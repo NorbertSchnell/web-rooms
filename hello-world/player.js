@@ -12,7 +12,7 @@ function start() {
   console.log("Hello Console!"); // watch the console in the browser
 
   // register simple click event on window
-  window.addEventListener('click', sendHelloThere);
+  window.addEventListener('pointerdown', sendHelloThere);
 };
 
 // send message 'hello-there' to all other clients
