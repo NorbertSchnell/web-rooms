@@ -37,8 +37,12 @@ class Client {
     this.dataSubscriptions = null;
   }
 
-  sendMessage(...message) {
+  sendMessage(message) {
     sendMessage(this.socket, message);
+  }
+
+  sendArray(array) {
+    sendMessage(this.socket, array);
   }
 
   sendError(...message) {
@@ -181,7 +185,7 @@ class Room {
 
     for (let key in data) {
       const value = data[key];
-      client.sendMessage(key, value);
+      client.sendMessage([key, value]);
     }
   }
 
@@ -227,33 +231,41 @@ class Room {
     if (listeners) {
       for (let client of listeners) {
         if (client !== exclude) {
-          client.sendMessage(key, value);
+          client.sendMessage([key, value]);
         }
       }
     }
 
     for (let client of this.anyDataListeners) {
       if (client !== exclude) {
-        client.sendMessage(key, value);
+        client.sendMessage([key, value]);
       }
     }
   }
 
   sendMessageToClientById(sender, clientId, message) {
     if (clientId !== sender.id) {
+      if (!Array.isArray(message)) {
+        message = [message];
+      }
+
       const clientsById = this.clientsById;
       const client = clientsById[clientId];
 
       if (client) {
-        client.sendMessage(...message);
+        client.sendMessage(message);
       }
     }
   }
 
   sendMessageToOtherClients(sender, message) {
+    if (!Array.isArray(message)) {
+      message = [message];
+    }
+
     for (let client of this.clientList) {
       if (client !== sender) {
-        client.sendMessage(...message);
+        client.sendMessage(message);
       }
     }
   }
@@ -308,7 +320,7 @@ webSocketServer.on('connection', (socket, req) => {
           const room = new Room(name);
 
           const clientId = room.addClient(client);
-          client.sendMessage('*client-id*', clientId);
+          client.sendMessage(['*client-id*', clientId]);
 
           room.callDataListeners('*client-enter*', clientId, client);
 
@@ -336,7 +348,7 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientIds = room.getClientIds();
-            client.sendMessage('*client-ids*', clientIds);
+            client.sendMessage(['*client-ids*', clientIds]);
           } else {
             client.sendError('no-room', room.name);
           }
@@ -350,7 +362,7 @@ webSocketServer.on('connection', (socket, req) => {
           if (room) {
             for (let other of this.clientList) {
               if (other !== client) {
-                client.sendMessage('*client-enter*', other.id);
+                client.sendMessage(['*client-enter*', other.id]);
               }
             }
 
@@ -381,7 +393,7 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientCount = room.getClientCount();
-            client.sendMessage('*client-count*', clientCount);
+            client.sendMessage(['*client-count*', clientCount]);
           } else {
             client.sendError('no-room', room.name);
           }
@@ -394,7 +406,7 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientCount = room.getClientCount();
-            client.sendMessage('*client-count*', clientCount);
+            client.sendMessage(['*client-count*', clientCount]);
 
             room.addDataListener(client, '*client-count*');
           } else {
@@ -466,7 +478,7 @@ webSocketServer.on('connection', (socket, req) => {
           if (room) {
             const key = incoming[1];
             const value = room.getData(key);
-            client.sendMessage(key, value);
+            client.sendMessage([key, value]);
           } else {
             client.sendError('no-room', room.name);
           }
