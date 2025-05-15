@@ -9,7 +9,10 @@
   - [Players](https://norbertschnell.github.io/web-rooms/quizzy/) ... the quiz players
   - [Master](https://norbertschnell.github.io/web-rooms/quizzy/master.html) ... the quiz master (should be only one)
 
-## 2 Getting Started
+## 2 Server Test
+You can test whether the Web Rooms WebSocket server is running by visitig the following link: [https://nosch.uber.space/web-rooms/](https://nosch.uber.space/web-rooms/)
+
+## 3 Getting Started
 To start developing your own rooms you may begin with modifying one of the examples. 
 The most simple example is *hello-world*. The example sends simple messages to the other cients.
 
@@ -25,7 +28,7 @@ The *hello-world* example consists of the followig files:
 - **`player.js`** | the JavaScript of the client
 - **`style.css`** | the CSS style sheet of the client
 
-## 3 Web Room Request
+## 4 Web Room Request
 
 ### 3.1 Websocket Requests
 The *Web Rooms* sever provides a set of requests to enter rooms, query information about a room (e.g. the number of clients currently connected to the room) and send messages to other clients.
