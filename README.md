@@ -10,7 +10,7 @@
   - [Master](https://norbertschnell.github.io/web-rooms/quizzy/master.html) ... the quiz master (should be only one)
 
 ## 2 Server Test
-You can test whether the Web Rooms WebSocket server is running at this link: [https://nosch.uber.space/web-rooms/](https://nosch.uber.space/web-rooms/)
+You can test whether the Web Rooms WebSocket server is running by visitig the following link: [https://nosch.uber.space/web-rooms/](https://nosch.uber.space/web-rooms/)
 
 ## 3 Getting Started
 To start developing your own rooms you may begin with modifying one of the examples. 
