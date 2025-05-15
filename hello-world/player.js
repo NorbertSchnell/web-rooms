@@ -42,8 +42,9 @@ function sendRequest(...message) {
 
 // listen to opening websocket connections
 socket.addEventListener('open', (event) => {
-  sendRequest('*enter-room*', 'touch-touch');
+  sendRequest('*enter-room*', 'hello-world');
   sendRequest('*subscribe-client-count*');
+  sendRequest('*subscribe-client-enter-exit*');
 
   // ping the server regularly with an empty message to prevent the socket from closing
   setInterval(() => socket.send(''), 30000);
@@ -67,20 +68,30 @@ socket.addEventListener('message', (event) => {
       // responds to '*enter-room*'
       case '*client-id*':
         clientId = incoming[1];
-        infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;
+        infoDisplay.innerHTML = `#${clientId}/${clientCount}`;
         start();
         break;
 
       // responds to '*subscribe-client-count*'
       case '*client-count*':
         clientCount = incoming[1];
-        infoDisplay.innerHTML = `#${clientId + 1}/${clientCount}`;
+        infoDisplay.innerHTML = `#${clientId}/${clientCount}`;
+        break;
+
+      case '*client-enter*':
+        const enterId = incoming[1];
+        console.log(`client #${enterId} has entered the room`);
+        break;
+
+      case '*client-exit*':
+        const exitId = incoming[1];
+        console.log(`client #${exitId} has left the room`);
         break;
 
       // 'hello there' messages sent from other clients
       case 'hello-there':
         const otherId = incoming[1];
-        console.log(`client #${otherId + 1} says 'Hello there!'`);
+        console.log(`client #${otherId} says 'Hello there!'`);
 
         highlightText(titleDisplay); // highlight screen by others (function defined above)
         break;
@@ -92,6 +103,7 @@ socket.addEventListener('message', (event) => {
       }
 
       default:
+        console.log(`unknown incoming messsage: [${incoming}]`);
         break;
     }
   }
