@@ -360,7 +360,7 @@ webSocketServer.on('connection', (socket, req) => {
           const room = client.room;
 
           if (room) {
-            for (let other of this.clientList) {
+            for (let other of room.clientList) {
               if (other !== client) {
                 client.sendMessage(['*client-enter*', other.id]);
               }
