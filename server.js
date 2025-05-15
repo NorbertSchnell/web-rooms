@@ -4,7 +4,7 @@ import express from 'express';
 import WebSocket from 'ws';
 import * as fs from 'fs';
 
-const httpPort = Number(process.env.PORT) || 3000;
+const httpPort = Number(process.env.PORT) || 8080;
 const httpHost = '0.0.0.0';
 const app = express();
 
@@ -158,7 +158,7 @@ class Room {
     const clientIds = [];
 
     for (let client of this.clientList) {
-      clientIds.push(client);
+      clientIds.push(client.id);
     }
 
     return clientIds;
@@ -274,16 +274,16 @@ function resetAll() {
  */
 // mkdir sslcert
 // openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout sslcert/selfsigned.key -out sslcert/selfsigned.crt
-const key = fs.readFileSync('sslcert/selfsigned.key', 'utf8');
-const cert = fs.readFileSync('sslcert/selfsigned.crt', 'utf8');
-const credentials = { key, cert };
-const httpServer = https
-  .createServer(credentials, app)
-  .listen(httpPort, httpHost, app, () => console.log(`server listening on port ${httpPort}`));
+// const key = fs.readFileSync('sslcert/selfsigned.key', 'utf8');
+// const cert = fs.readFileSync('sslcert/selfsigned.crt', 'utf8');
+// const credentials = { key, cert };
+// const httpServer = https
+//   .createServer(credentials, app)
+//   .listen(httpPort, httpHost, app, () => console.log(`server listening on ${httpHost}:${httpPort}`));
 
-// const httpServer = http
-//   .createServer(app)
-//   .listen(httpPort, httpHost, () => console.log(`server listening on ${httpHost}:${httpPort}`));
+const httpServer = http
+  .createServer(app)
+  .listen(httpPort, httpHost, () => console.log(`server listening on ${httpHost}:${httpPort}`));
 
 /****************************************************************
  * websoket server
