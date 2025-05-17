@@ -4,7 +4,9 @@
 ## 1 Examples
 
 - [Hello World!](https://norbertschnell.github.io/web-rooms/hello-world/) ... the simplest example
-- [Touch Touch](https://norbertschnell.github.io/web-rooms/touch-touch/) ... sending a single pointer position to all other clients
+- [Touch Touch](https://norbertschnell.github.io/web-rooms/touch-touch/) ... sending a pointer position to all other players
+- [Incr & Decr](https://norbertschnell.github.io/web-rooms/incr-decr/) ... share a number among players
+- [Tone Turns](https://norbertschnell.github.io/web-rooms/tone-turns/) ... taking turns with tones
 - Quzzy ... a simple Quiz with a master client and unlimited players
   - [Players](https://norbertschnell.github.io/web-rooms/quizzy/) ... the quiz players
   - [Master](https://norbertschnell.github.io/web-rooms/quizzy/master.html) ... the quiz master (should be only one)
@@ -80,18 +82,21 @@ A client that has entered a room can send the following requests to send message
 ##### `'*broadcast-message*' <message>`
 - send a message to all other clients in the room
 
-#### 3.1.4 Data of a Room (untested!)
+#### 3.1.4 Data of a Room
 A client that has entered a room can send the following requests to set and get data items stored within the room.
 
+##### `'*init-data*' <key> <value>`
+- initialise value of the data item with the given key
+
 ##### `'*set-data*' <key> <value>`
-- set the value of a data item
+- set value of the data item with the given key
 
 ##### `'*get-data*' <key>`
-- get the value of a data item
+- get value of a data item with the given key
 - &#8594; sends `<key> <value>` of the requested data item
 
 ##### `'*subscribe-data*' <key>`
-- subscribe to notifications sent when the value of the given data item changes
+- subscribe to notifications sent when the value of the data item of the given key changes 
 - &#8594; sends `<key> <value>` for the current value and each time the value of the given data item changes
 
 ##### `'*unsubscribe-data*' <key>`
