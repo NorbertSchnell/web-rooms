@@ -26,16 +26,9 @@ function onPointer() {
 
     // start
     enterRoom();
-
-    displayText('Wait for your turn...');
   } else if (clientId !== null && isYourTurn) {
-    isYourTurn = false;
-
     // pass on to random client
     passOn();
-
-    // clear display
-    displayText('Wait for your turn...');
   }
 }
 
@@ -43,18 +36,25 @@ function enterRoom() {
   sendRequest('*enter-room*', 'click-fast');
   sendRequest('*subscribe-client-count*');
   sendRequest('*subscribe-client-enter-exit*');
+
+  displayText('Wait for your turn...');
 }
 
-function yourTurn() {
+function takeYourTurn() {
   isYourTurn = true;
+
   displayText('Now', true);
 }
 
 function passOn() {
+  isYourTurn = false;
+
   const array = Array.from(clientIds);
   const randomIndex = Math.floor(array.length * Math.random());
   const nextId = array[randomIndex];
   sendRequest('*send-message*', nextId, 'your-turn');
+
+  displayText('Wait for your turn...');
 }
 
 function displayText(text = '', highlight = false) {
@@ -69,6 +69,12 @@ function displayText(text = '', highlight = false) {
   infoDisplay.innerText = text;
 }
 
+window.addEventListener('beforeunload', (event) => {
+  if (isYourTurn) {
+    passOn();
+  }
+});
+
 /****************************************************************
  * websocket communication
  */
@@ -82,7 +88,6 @@ socket.addEventListener('open', (event) => {
 
 socket.addEventListener("close", (event) => {
   clientId = null;
-  passOn();
   document.body.classList.add('disconnected');
 });
 
@@ -112,7 +117,7 @@ socket.addEventListener('message', (event) => {
           yourAreFirst = true;
         } else if (yourAreFirst) {
           yourAreFirst = false;
-          yourTurn();
+          takeYourTurn();
         }
 
         break;
@@ -130,7 +135,7 @@ socket.addEventListener('message', (event) => {
       case 'your-turn':
         const pitch = pitches[clientId % pitches.length];
         playNote(pitch);
-        yourTurn();
+        takeYourTurn();
         break;
 
       case '*error*': {
@@ -155,10 +160,9 @@ function sendRequest(...message) {
 /****************************************************************
  * audio synthesis
  */
-function playNote(pitch = 69, gain = 1, modIndex = 1, attack = 0.001, duration = 1, freqRatio = 1.001, detune = 10, attackRatio = 1, durationRatio = 0.333) {
+function playNote(pitch = 69, gain = 1, modIndex = 1, attack = 0.001, duration = 1, freqRatio = 1.001, attackRatio = 1, durationRatio = 0.333) {
   const time = audioContext.currentTime;
   const carFreq = pitchToFreq(pitch);
-  const carDetune = detune * Math.random();
 
   const carEnv = audioContext.createGain();
   carEnv.connect(audioContext.destination);
@@ -172,13 +176,11 @@ function playNote(pitch = 69, gain = 1, modIndex = 1, attack = 0.001, duration =
   carOsc.connect(carEnv);
   carOsc.type = 'sine';
   carOsc.frequency.value = carFreq;
-  carOsc.detune.value = carDetune;
   carOsc.start(time);
   carOsc.stop(time + duration);
 
   if (modIndex !== 0) {
     const modFreq = carFreq * freqRatio;
-    const modDetune = detune * Math.random();
     const modDuration = duration * durationRatio;
     const modAttack = Math.min(attack * attackRatio, modDuration);
 
@@ -194,7 +196,6 @@ function playNote(pitch = 69, gain = 1, modIndex = 1, attack = 0.001, duration =
     modOsc.connect(modEnv);
     modOsc.type = 'sine';
     modOsc.frequency.value = modFreq;
-    modOsc.detune.value = modDetune;
     modOsc.start(time);
     modOsc.stop(time + modDuration);
   }
