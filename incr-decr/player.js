@@ -4,8 +4,7 @@ const scoreDisplay = document.getElementById('score-display');
 const clientDisplay = document.getElementById('client-display');
 
 // address of the WebSocket server
-// const webRoomsWebSocketServerAddr = 'https://nosch.uber.space/web-rooms/';
-const webRoomsWebSocketServerAddr = 'http://localhost:8080';
+const webRoomsWebSocketServerAddr = 'https://nosch.uber.space/web-rooms/';
 
 let clientId = null; // client ID sent by web-rooms server when calling 'enter-room'
 let clientCount = 0; // number of clients connected to the same room

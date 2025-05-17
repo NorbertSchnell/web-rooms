@@ -33,7 +33,7 @@ function onPointer() {
 }
 
 function enterRoom() {
-  sendRequest('*enter-room*', 'click-fast');
+  sendRequest('*enter-room*', 'tone-turns');
   sendRequest('*subscribe-client-count*');
   sendRequest('*subscribe-client-enter-exit*');
 
