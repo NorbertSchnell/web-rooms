@@ -185,7 +185,10 @@ class Room {
 
     for (let key in data) {
       const value = data[key];
-      client.sendMessage([key, value]);
+
+      if (value !== undefined) {
+        client.sendMessage([key, value]);
+      }
     }
   }
 
@@ -317,15 +320,20 @@ webSocketServer.on('connection', (socket, req) => {
         // room client ///////////////////////////////////////////////////
         case '*enter-room*': {
           const name = incoming[1];
-          const room = new Room(name);
 
-          const clientId = room.addClient(client);
-          client.sendMessage(['*client-id*', clientId]);
+          if (typeof name === 'string' || name instanceof String) {
+            const room = new Room(name);
 
-          room.callDataListeners('*client-enter*', clientId, client);
+            const clientId = room.addClient(client);
+            client.sendMessage(['*client-id*', clientId]);
 
-          const clientCount = room.getClientCount();
-          room.callDataListeners('*client-count*', clientCount, client);
+            room.callDataListeners('*client-enter*', clientId, client);
+
+            const clientCount = room.getClientCount();
+            room.callDataListeners('*client-count*', clientCount, client);
+          } else {
+            client.sendError('invalid-name', name);
+          }
 
           break;
         }
@@ -434,8 +442,13 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const clientId = incoming[1];
-            const message = incoming[2];
-            room.sendMessageToClientById(client, clientId, message);
+
+            if (typeof clientId === 'number') {
+              const message = incoming[2];
+              room.sendMessageToClientById(client, clientId, message);
+            } else {
+              client.sendError('invalid-client-id', clientId);
+            }
           } else {
             client.sendError('no-room', room.name);
           }
@@ -457,14 +470,41 @@ webSocketServer.on('connection', (socket, req) => {
         }
 
         // data ///////////////////////////////////////////////////
+        case '*init-data*': {
+          const room = client.room;
+
+          if (room) {
+            const key = incoming[1];
+
+            if (typeof key === 'string' || key instanceof String) {
+              if (room.getData(key) === undefined) {
+                const value = incoming[2];
+                room.setData(key, value);
+                room.callDataListeners(key, value);
+              }
+            } else {
+              client.sendError('invalid-key', key);
+            }
+          } else {
+            client.sendError('no-room', room.name);
+          }
+
+          break;
+        }
+
         case '*set-data*': {
           const room = client.room;
 
           if (room) {
             const key = incoming[1];
-            const value = incoming[2];
-            room.setData(key, value);
-            room.callDataListeners(key, value, client);
+
+            if (typeof key === 'string' || key instanceof String) {
+              const value = incoming[2];
+              room.setData(key, value);
+              room.callDataListeners(key, value);
+            } else {
+              client.sendError('invalid-key', key);
+            }
           } else {
             client.sendError('no-room', room.name);
           }
@@ -477,8 +517,13 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const key = incoming[1];
-            const value = room.getData(key);
-            client.sendMessage([key, value]);
+
+            if (typeof key === 'string' || key instanceof String) {
+              const value = room.getData(key);
+              client.sendMessage([key, value]);
+            } else {
+              client.sendError('invalid-key', key);
+            }
           } else {
             client.sendError('no-room', room.name);
           }
@@ -491,8 +536,13 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const key = incoming[1];
-            room.sendDataToClient(client);
-            room.addDataListener(client, key);
+
+            if (typeof key === 'string' || key instanceof String) {
+              room.sendDataToClient(client);
+              room.addDataListener(client, key);
+            } else {
+              client.sendError('invalid-key', key);
+            }
           } else {
             client.sendError('no-room', room.name);
           }
@@ -505,7 +555,12 @@ webSocketServer.on('connection', (socket, req) => {
 
           if (room) {
             const key = incoming[1];
-            room.removeDataListener(client, key);
+
+            if (typeof key === 'string' || key instanceof String) {
+              room.removeDataListener(client, key);
+            } else {
+              client.sendError('invalid-key', key);
+            }
           } else {
             client.sendError('no-room', room.name);
           }
