@@ -313,264 +313,270 @@ webSocketServer.on('connection', (socket, req) => {
 
   socket.on('message', (data) => {
     if (data.length > 0) { // filter out empty ping messages
-      const incoming = JSON.parse(data);
-      const selector = incoming[0];
+      try {
+        const incoming = JSON.parse(data);
 
-      switch (selector) {
-        // room client ///////////////////////////////////////////////////
-        case '*enter-room*': {
-          const name = incoming[1];
+        const selector = incoming[0];
 
-          if (typeof name === 'string' || name instanceof String) {
-            const room = new Room(name);
+        switch (selector) {
+          // room client ///////////////////////////////////////////////////
+          case '*enter-room*': {
+            const name = incoming[1];
 
-            const clientId = room.addClient(client);
-            client.sendMessage(['*client-id*', clientId]);
+            if (typeof name === 'string' || name instanceof String) {
+              const room = new Room(name);
 
-            room.callDataListeners('*client-enter*', clientId, client);
+              const clientId = room.addClient(client);
+              client.sendMessage(['*client-id*', clientId]);
+
+              room.callDataListeners('*client-enter*', clientId, client);
+
+              const clientCount = room.getClientCount();
+              room.callDataListeners('*client-count*', clientCount, client);
+            } else {
+              client.sendError('invalid-name', name);
+            }
+
+            break;
+          }
+
+          case '*exit-room*': {
+            const room = client.room;
+
+            room.removeClient(client);
+
+            room.callDataListeners('*client-exit*', clientId);
 
             const clientCount = room.getClientCount();
             room.callDataListeners('*client-count*', clientCount, client);
-          } else {
-            client.sendError('invalid-name', name);
+
+            break;
           }
 
-          break;
-        }
+          case '*get-client-ids*': {
+            const room = client.room;
 
-        case '*exit-room*': {
-          const room = client.room;
-
-          room.removeClient(client);
-
-          room.callDataListeners('*client-exit*', clientId);
-
-          const clientCount = room.getClientCount();
-          room.callDataListeners('*client-count*', clientCount, client);
-
-          break;
-        }
-
-        case '*get-client-ids*': {
-          const room = client.room;
-
-          if (room) {
-            const clientIds = room.getClientIds();
-            client.sendMessage(['*client-ids*', clientIds]);
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        case '*subscribe-client-enter-exit*': {
-          const room = client.room;
-
-          if (room) {
-            for (let other of room.clientList) {
-              if (other !== client) {
-                client.sendMessage(['*client-enter*', other.id]);
-              }
-            }
-
-            room.addDataListener(client, '*client-enter*');
-            room.addDataListener(client, '*client-exit*');
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        case '*unsubscribe-clients*': {
-          const room = client.room;
-
-          if (room) {
-            room.removeDataListener(client, '*client-enter*');
-            room.removeDataListener(client, '*client-exit*');
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        case '*get-client-count*': {
-          const room = client.room;
-
-          if (room) {
-            const clientCount = room.getClientCount();
-            client.sendMessage(['*client-count*', clientCount]);
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        case '*subscribe-client-count*': {
-          const room = client.room;
-
-          if (room) {
-            const clientCount = room.getClientCount();
-            client.sendMessage(['*client-count*', clientCount]);
-
-            room.addDataListener(client, '*client-count*');
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        case '*unsubscribe-client-count*': {
-          const room = client.room;
-
-          if (room) {
-            room.removeDataListener(client, 'client-count');
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        // messages ///////////////////////////////////////////////////
-        case '*send-message*': {
-          const room = client.room;
-
-          if (room) {
-            const clientId = incoming[1];
-
-            if (typeof clientId === 'number') {
-              const message = incoming[2];
-              room.sendMessageToClientById(client, clientId, message);
+            if (room) {
+              const clientIds = room.getClientIds();
+              client.sendMessage(['*client-ids*', clientIds]);
             } else {
-              client.sendError('invalid-client-id', clientId);
+              client.sendError('no-room');
             }
-          } else {
-            client.sendError('no-room', room.name);
+
+            break;
           }
 
-          break;
-        }
+          case '*subscribe-client-enter-exit*': {
+            const room = client.room;
 
-        case '*broadcast-message*': {
-          const room = client.room;
+            if (room) {
+              for (let other of room.clientList) {
+                if (other !== client) {
+                  client.sendMessage(['*client-enter*', other.id]);
+                }
+              }
 
-          if (room) {
-            const message = incoming[1];
-            room.sendMessageToOtherClients(client, message);
-          } else {
-            client.sendError('no-room', room.name);
+              room.addDataListener(client, '*client-enter*');
+              room.addDataListener(client, '*client-exit*');
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
           }
 
-          break;
-        }
+          case '*unsubscribe-clients*': {
+            const room = client.room;
 
-        // data ///////////////////////////////////////////////////
-        case '*init-data*': {
-          const room = client.room;
+            if (room) {
+              room.removeDataListener(client, '*client-enter*');
+              room.removeDataListener(client, '*client-exit*');
+            } else {
+              client.sendError('no-room');
+            }
 
-          if (room) {
-            const key = incoming[1];
+            break;
+          }
 
-            if (typeof key === 'string' || key instanceof String) {
-              if (room.getData(key) === undefined) {
+          case '*get-client-count*': {
+            const room = client.room;
+
+            if (room) {
+              const clientCount = room.getClientCount();
+              client.sendMessage(['*client-count*', clientCount]);
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          case '*subscribe-client-count*': {
+            const room = client.room;
+
+            if (room) {
+              const clientCount = room.getClientCount();
+              client.sendMessage(['*client-count*', clientCount]);
+
+              room.addDataListener(client, '*client-count*');
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          case '*unsubscribe-client-count*': {
+            const room = client.room;
+
+            if (room) {
+              room.removeDataListener(client, 'client-count');
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          // messages ///////////////////////////////////////////////////
+          case '*send-message*': {
+            const room = client.room;
+
+            if (room) {
+              const clientId = incoming[1];
+
+              if (typeof clientId === 'number') {
+                const message = incoming[2];
+                room.sendMessageToClientById(client, clientId, message);
+              } else {
+                client.sendError('invalid-client-id', clientId);
+              }
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          case '*broadcast-message*': {
+            const room = client.room;
+
+            if (room) {
+              const message = incoming[1];
+              room.sendMessageToOtherClients(client, message);
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          // data ///////////////////////////////////////////////////
+          case '*init-data*': {
+            const room = client.room;
+
+            if (room) {
+              const key = incoming[1];
+
+              if (typeof key === 'string' || key instanceof String) {
+                if (room.getData(key) === undefined) {
+                  const value = incoming[2];
+                  room.setData(key, value);
+                  room.callDataListeners(key, value);
+                }
+              } else {
+                client.sendError('invalid-key', key);
+              }
+            } else {
+              client.sendError('no-room');
+            }
+
+            break;
+          }
+
+          case '*set-data*': {
+            const room = client.room;
+
+            if (room) {
+              const key = incoming[1];
+
+              if (typeof key === 'string' || key instanceof String) {
                 const value = incoming[2];
                 room.setData(key, value);
                 room.callDataListeners(key, value);
+              } else {
+                client.sendError('invalid-key', key);
               }
             } else {
-              client.sendError('invalid-key', key);
+              client.sendError('no-room');
             }
-          } else {
-            client.sendError('no-room', room.name);
+
+            break;
           }
 
-          break;
-        }
+          case '*get-data*': {
+            const room = client.room;
 
-        case '*set-data*': {
-          const room = client.room;
+            if (room) {
+              const key = incoming[1];
 
-          if (room) {
-            const key = incoming[1];
-
-            if (typeof key === 'string' || key instanceof String) {
-              const value = incoming[2];
-              room.setData(key, value);
-              room.callDataListeners(key, value);
+              if (typeof key === 'string' || key instanceof String) {
+                const value = room.getData(key);
+                client.sendMessage([key, value]);
+              } else {
+                client.sendError('invalid-key', key);
+              }
             } else {
-              client.sendError('invalid-key', key);
+              client.sendError('no-room');
             }
-          } else {
-            client.sendError('no-room', room.name);
+
+            break;
           }
 
-          break;
-        }
+          case '*subscribe-data*': {
+            const room = client.room;
 
-        case '*get-data*': {
-          const room = client.room;
+            if (room) {
+              const key = incoming[1];
 
-          if (room) {
-            const key = incoming[1];
-
-            if (typeof key === 'string' || key instanceof String) {
-              const value = room.getData(key);
-              client.sendMessage([key, value]);
+              if (typeof key === 'string' || key instanceof String) {
+                room.sendDataToClient(client);
+                room.addDataListener(client, key);
+              } else {
+                client.sendError('invalid-key', key);
+              }
             } else {
-              client.sendError('invalid-key', key);
+              client.sendError('no-room');
             }
-          } else {
-            client.sendError('no-room', room.name);
+
+            break;
           }
 
-          break;
-        }
+          case '*unsubscribe-data*': {
+            const room = client.room;
 
-        case '*subscribe-data*': {
-          const room = client.room;
+            if (room) {
+              const key = incoming[1];
 
-          if (room) {
-            const key = incoming[1];
-
-            if (typeof key === 'string' || key instanceof String) {
-              room.sendDataToClient(client);
-              room.addDataListener(client, key);
+              if (typeof key === 'string' || key instanceof String) {
+                room.removeDataListener(client, key);
+              } else {
+                client.sendError('invalid-key', key);
+              }
             } else {
-              client.sendError('invalid-key', key);
+              client.sendError('no-room');
             }
-          } else {
-            client.sendError('no-room', room.name);
+
+            break;
           }
 
-          break;
+          default:
+            client.sendError('unknown-message', selector);
+            break;
         }
-
-        case '*unsubscribe-data*': {
-          const room = client.room;
-
-          if (room) {
-            const key = incoming[1];
-
-            if (typeof key === 'string' || key instanceof String) {
-              room.removeDataListener(client, key);
-            } else {
-              client.sendError('invalid-key', key);
-            }
-          } else {
-            client.sendError('no-room', room.name);
-          }
-
-          break;
-        }
-
-        default:
-          client.sendError('unknown-message', selector);
-          break;
+      }
+      catch (e) {
+        client.sendError('invalid-message', e);
       }
     }
   });
