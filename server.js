@@ -215,7 +215,10 @@ class Room {
       // remove client as listener of all keys
       for (let key of client.dataSubscriptions) {
         const listeners = this.dataListeners.get(key);
-        listeners.delete(client);
+
+        if (listeners) {
+          listeners.delete(client);
+        }
       }
 
       client.dataSubscriptions.clear();
@@ -223,7 +226,11 @@ class Room {
       this.anyDataListeners.delete(client);
     } else {
       const listeners = this.dataListeners.get(key);
-      listeners.delete(client);
+
+      if (listeners) {
+        listeners.delete(client);
+      }
+      
       client.dataSubscriptions.delete(key);
     }
   }
